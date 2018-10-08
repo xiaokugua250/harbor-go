@@ -2,7 +2,6 @@
 
 
 [dev.harbor]
-baseurl = "10.127.48.30"
-
-admin = "admin"
-password = "AI&BIGDATA"
+baseurl = "yourHarborServerIP"
+admin = "yourAdminAccount"
+password = "yourAdminPasswd"
