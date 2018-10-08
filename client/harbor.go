@@ -1,7 +1,6 @@
-// harbor的客户端
-// 开发者:天河星光容器云开发小组(郭贵鑫、杜量、刘志聪、赵帅帅)
-// 邮箱:guixin.guo@nscc-gz.cn、liang.du@nscc-gz.cn、zhicong.liu@nscc-gz.cn、shuaishuai.zhao@nscc-gz.cn
-package harbor
+// harbor golang客户端
+
+package client
 
 import (
 	"crypto/tls"
@@ -11,7 +10,7 @@ import (
 
 	"errors"
 
-	"nebula/common/conf"
+	"conf"
 )
 
 var (
