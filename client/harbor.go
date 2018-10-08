@@ -10,7 +10,7 @@ import (
 
 	"errors"
 
-	"conf"
+	"harbor-go/conf"
 )
 
 var (

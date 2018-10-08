@@ -1,0 +1,8 @@
+# demo for harbor configuration
+
+
+[dev.harbor]
+baseurl = "10.127.48.30"
+
+admin = "admin"
+password = "AI&BIGDATA"

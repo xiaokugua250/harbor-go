@@ -2,6 +2,10 @@ package conf
 
 import "github.com/spf13/viper"
 
+//环境信息
+const env = "dev"
+const server = "localhost"
+
 //基本配置接口
 type Config struct {
 	service string
@@ -18,7 +22,7 @@ func (config *Config) LoadHarborConfig(configName string, configPath string) err
 		return err
 	}
 	config.v = viper.GetViper()
-	config.service = service
+
 	return nil
 }
 

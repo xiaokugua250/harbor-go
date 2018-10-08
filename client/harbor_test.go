@@ -2,17 +2,15 @@ package client
 
 import (
 	"fmt"
-	"nebula/common/conf"
-	"strings"
+	"harbor-go/conf"
+
 	"testing"
 )
 
-func TestHarborHttpClient(t *testing.T) {
-	// 	HarborHttpClient("https://10.127.48.30", nil, "/api/systeminfo")
-	service := "harbor"
+func TestHarborSystemInfo(t *testing.T) {
 	// 从配置文件加载配置信息
 	config := new(conf.Config)
-	err := config.LoadHarborConfig(service)
+	err := config.LoadHarborConfig("harbor", "../")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -21,23 +19,141 @@ func TestHarborHttpClient(t *testing.T) {
 		fmt.Println(err)
 	}
 
-	/*systemInfo,err :=HarborSystemInfo()
-	if err != nil{
-		fmt.Println(err)
-	}
-	fmt.Println(systemInfo)*/
 	harborJson, err := HarborSystemInfo()
 	if err != nil {
-		fmt.Println("err happend ===>", err)
+		fmt.Println(err)
 	}
 	fmt.Println(harborJson)
 }
 
-func TestImageNameSpiliet(t *testing.T) {
-	imageFullName := "nscc-gz.cn/nscc/spark:2.1.0"
+func TestHarborSystemInfovolumes(t *testing.T) {
+	// 从配置文件加载配置信息
+	config := new(conf.Config)
+	err := config.LoadHarborConfig("harbor", "../")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = InitHarbor(config)
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	projects := strings.Split(imageFullName, "/")
-	repostory := strings.Split(strings.Split(imageFullName, "/")[2], ":")[1]
-	fmt.Println(projects[1])
-	fmt.Println(repostory)
+	harborJson, err := HarborSystemInfovolumes()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(harborJson)
+}
+func TestHarborStatistics(t *testing.T) {
+	// 从配置文件加载配置信息
+	config := new(conf.Config)
+	err := config.LoadHarborConfig("harbor", "../")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = InitHarbor(config)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	harborJson, err := HarborStatistics()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(harborJson)
+}
+
+func TestHarborProjects(t *testing.T) {
+	// 从配置文件加载配置信息
+	config := new(conf.Config)
+	err := config.LoadHarborConfig("harbor", "../")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = InitHarbor(config)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	harborJson, err := HarborProjects()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(harborJson)
+}
+
+func TestHarborProjectSearch(t *testing.T) {
+	// 从配置文件加载配置信息
+	config := new(conf.Config)
+	err := config.LoadHarborConfig("harbor", "../")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = InitHarbor(config)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	harborJson, err := HarborProjectSearch("params")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(harborJson)
+}
+
+func TestHarborProjectsRepositoriesTags(t *testing.T) {
+	// 从配置文件加载配置信息
+	config := new(conf.Config)
+	err := config.LoadHarborConfig("harbor", "../")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = InitHarbor(config)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	harborJson, err := HarborProjectsRepositoriesTags("project", "respository", 1)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(harborJson)
+}
+
+func TestHarborProjectMembers(t *testing.T) {
+	// 从配置文件加载配置信息
+	config := new(conf.Config)
+	err := config.LoadHarborConfig("harbor", "../")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = InitHarbor(config)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	harborJson, err := HarborProjectMembers(2)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(harborJson)
+}
+
+func TestHarborRepositories(t *testing.T) {
+	// 从配置文件加载配置信息
+	config := new(conf.Config)
+	err := config.LoadHarborConfig("harbor", "../")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = InitHarbor(config)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	harborJson, err := HarborRepositories(1, 15, 2)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(harborJson)
 }
