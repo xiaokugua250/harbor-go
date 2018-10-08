@@ -1,0 +1,6055 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json",
+    "text/plain"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "These APIs provide services for manipulating Harbor project.",
+    "title": "Harbor API",
+    "version": "1.6.0"
+  },
+  "host": "localhost",
+  "basePath": "/api",
+  "paths": {
+    "/chartrepo/charts": {
+      "post": {
+        "description": "Upload a chart file to the default 'library' project. Uploading together with the prov file at the same time is also supported.",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "tags": [
+          "Products",
+          "Chart Repository"
+        ],
+        "summary": "Upload a chart file to the defult 'library' project.",
+        "parameters": [
+          {
+            "type": "file",
+            "description": "The chart file",
+            "name": "chart",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "file",
+            "description": "The provance file",
+            "name": "prov",
+            "in": "formData"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The specified chart is successfully uploaded."
+          },
+          "401": {
+            "$ref": "#/definitions/UnauthorizedChartAPIError"
+          },
+          "403": {
+            "$ref": "#/definitions/ForbiddenChartAPIError"
+          },
+          "500": {
+            "$ref": "#/definitions/InternalChartAPIError"
+          },
+          "507": {
+            "$ref": "#/definitions/InsufficientStorageChartAPIError"
+          }
+        }
+      }
+    },
+    "/chartrepo/health": {
+      "get": {
+        "description": "Check the health of chart repository service.",
+        "tags": [
+          "Products",
+          "Chart Repository"
+        ],
+        "summary": "Check the health of chart repository service.",
+        "responses": {
+          "200": {
+            "description": "Health status of chart repository service is returned.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "healthy": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/definitions/UnauthorizedChartAPIError"
+          },
+          "403": {
+            "$ref": "#/definitions/ForbiddenChartAPIError"
+          }
+        }
+      }
+    },
+    "/chartrepo/{repo}/charts": {
+      "get": {
+        "description": "Get all the charts under the specified project",
+        "tags": [
+          "Products",
+          "Chart Repository"
+        ],
+        "summary": "Get all the charts under the specified project",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The project name",
+            "name": "repo",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/definitions/ChartInfoList"
+          },
+          "401": {
+            "$ref": "#/definitions/UnauthorizedChartAPIError"
+          },
+          "403": {
+            "$ref": "#/definitions/ForbiddenChartAPIError"
+          },
+          "500": {
+            "$ref": "#/definitions/InternalChartAPIError"
+          }
+        }
+      },
+      "post": {
+        "description": "Upload a chart file to the specified project. With this API, the corresponding provance file can be uploaded together with chart file at once.",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "tags": [
+          "Products",
+          "Chart Repository"
+        ],
+        "summary": "Upload a chart file to the specified project.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The project name",
+            "name": "repo",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "file",
+            "description": "The chart file",
+            "name": "chart",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "file",
+            "description": "The provance file",
+            "name": "prov",
+            "in": "formData"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The specified chart is successfully uploaded."
+          },
+          "401": {
+            "$ref": "#/definitions/UnauthorizedChartAPIError"
+          },
+          "403": {
+            "$ref": "#/definitions/ForbiddenChartAPIError"
+          },
+          "500": {
+            "$ref": "#/definitions/InternalChartAPIError"
+          },
+          "507": {
+            "$ref": "#/definitions/InsufficientStorageChartAPIError"
+          }
+        }
+      }
+    },
+    "/chartrepo/{repo}/charts/{name}": {
+      "get": {
+        "description": "Get all the versions of the specified chart",
+        "tags": [
+          "Products",
+          "Chart Repository"
+        ],
+        "summary": "Get all the versions of the specified chart",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The project name",
+            "name": "repo",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The chart name",
+            "name": "name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/definitions/ChartVersions"
+          },
+          "401": {
+            "$ref": "#/definitions/UnauthorizedChartAPIError"
+          },
+          "403": {
+            "$ref": "#/definitions/ForbiddenChartAPIError"
+          },
+          "404": {
+            "$ref": "#/definitions/NotFoundChartAPIError"
+          },
+          "500": {
+            "$ref": "#/definitions/InternalChartAPIError"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete all the versions of the specified chart",
+        "tags": [
+          "Products",
+          "Chart Repository"
+        ],
+        "summary": "Delete all the versions of the specified chart",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The project name",
+            "name": "repo",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The chart name",
+            "name": "name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The specified chart entry is successfully deleted."
+          },
+          "401": {
+            "$ref": "#/definitions/UnauthorizedChartAPIError"
+          },
+          "403": {
+            "$ref": "#/definitions/ForbiddenChartAPIError"
+          },
+          "500": {
+            "$ref": "#/definitions/InternalChartAPIError"
+          }
+        }
+      }
+    },
+    "/chartrepo/{repo}/charts/{name}/{version}": {
+      "get": {
+        "description": "Get the specified chart version",
+        "tags": [
+          "Products",
+          "Chart Repository"
+        ],
+        "summary": "Get the specified chart version",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The project name",
+            "name": "repo",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The chart name",
+            "name": "name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The chart version",
+            "name": "version",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/definitions/ChartVersionDetails"
+          },
+          "401": {
+            "$ref": "#/definitions/UnauthorizedChartAPIError"
+          },
+          "403": {
+            "$ref": "#/definitions/ForbiddenChartAPIError"
+          },
+          "404": {
+            "$ref": "#/definitions/NotFoundChartAPIError"
+          },
+          "500": {
+            "$ref": "#/definitions/InternalChartAPIError"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete the specified chart version",
+        "tags": [
+          "Products",
+          "Chart Repository"
+        ],
+        "summary": "Delete the specified chart version",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The project name",
+            "name": "repo",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The chart name",
+            "name": "name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The chart version",
+            "name": "version",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The specified chart entry is successfully deleted."
+          },
+          "401": {
+            "$ref": "#/definitions/UnauthorizedChartAPIError"
+          },
+          "403": {
+            "$ref": "#/definitions/ForbiddenChartAPIError"
+          },
+          "404": {
+            "$ref": "#/definitions/NotFoundChartAPIError"
+          },
+          "500": {
+            "$ref": "#/definitions/InternalChartAPIError"
+          }
+        }
+      }
+    },
+    "/chartrepo/{repo}/prov": {
+      "post": {
+        "description": "Upload a provance file to the specified project. The provance file should be targeted for an existing chart file.",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "tags": [
+          "Products",
+          "Chart Repository"
+        ],
+        "summary": "Upload a provance file to the specified project.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The project name",
+            "name": "repo",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "file",
+            "description": "The provance file",
+            "name": "prov",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The provance file is successfully uploaded."
+          },
+          "401": {
+            "$ref": "#/definitions/UnauthorizedChartAPIError"
+          },
+          "403": {
+            "$ref": "#/definitions/ForbiddenChartAPIError"
+          },
+          "500": {
+            "$ref": "#/definitions/InternalChartAPIError"
+          },
+          "507": {
+            "$ref": "#/definitions/InsufficientStorageChartAPIError"
+          }
+        }
+      }
+    },
+    "/configurations": {
+      "get": {
+        "description": "This endpoint is for retrieving system configurations that only provides for admin user.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get system configurations.",
+        "responses": {
+          "200": {
+            "description": "Get system configurations successfully. The response body is a map.",
+            "schema": {
+              "$ref": "#/definitions/ConfigurationsResponse"
+            }
+          },
+          "401": {
+            "description": "User need to log in first.ß"
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "put": {
+        "description": "This endpoint is for modifying system configurations that only provides for admin user.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Modify system configurations.",
+        "parameters": [
+          {
+            "description": "The configuration map can contain a subset of the attributes of the schema, which are to be updated.",
+            "name": "configurations",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Configurations"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Modify system configurations successfully."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/configurations/reset": {
+      "post": {
+        "description": "Reset system configurations from environment variables. Can only be accessed by admin user.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Reset system configurations.",
+        "responses": {
+          "200": {
+            "description": "Reset system configurations successfully."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/email/ping": {
+      "post": {
+        "description": "Test connection and authentication with email server.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Test connection and authentication with email server.",
+        "parameters": [
+          {
+            "description": "Email server settings, if some of the settings are not assigned, they will be read from system configuration.",
+            "name": "settings",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/EmailServerSetting"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ping email server successfully."
+          },
+          "400": {
+            "description": "Inviald email server settings."
+          },
+          "401": {
+            "description": "User need to login first."
+          },
+          "403": {
+            "description": "Only admin has this authority."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/internal/syncregistry": {
+      "post": {
+        "description": "This endpoint is for syncing all repositories of registry with database.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Sync repositories from registry to DB.",
+        "responses": {
+          "200": {
+            "description": "Sync repositories successfully."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/jobs/replication": {
+      "get": {
+        "description": "This endpoint let user list filters jobs according to the policy and repository. (if start_time and end_time are both null, list jobs of last 10 days)\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "List filters jobs according to the policy and repository",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int",
+            "description": "The ID of the policy that triggered this job.",
+            "name": "policy_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The return list length number.",
+            "name": "num",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "The end time of jobs done. (Timestamp)",
+            "name": "end_time",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "The start time of jobs. (Timestamp)",
+            "name": "start_time",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The respond jobs list filter by repository name.",
+            "name": "repository",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The respond jobs list filter by status.",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The page nubmer, default is 1.",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The size of per page, default is 10, maximum is 100.",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get the required logs successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/JobStatus"
+              }
+            },
+            "headers": {
+              "Link": {
+                "type": "string",
+                "description": "Link refers to the previous page and next page"
+              },
+              "X-Total-Count": {
+                "type": "integer",
+                "description": "The total count of jobs"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request because of invalid parameters."
+          },
+          "401": {
+            "description": "User need to login first."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "put": {
+        "description": "The endpoint is used to stop the replication jobs of a policy.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update status of jobs. Only stop is supported for now.",
+        "parameters": [
+          {
+            "description": "The policy ID and status.",
+            "name": "policyinfo",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateJobs"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update the status successfully."
+          },
+          "400": {
+            "description": "Bad request because of invalid parameters."
+          },
+          "401": {
+            "description": "User need to login first."
+          },
+          "403": {
+            "description": "User has no privilege for the operation."
+          },
+          "404": {
+            "description": "Resource requested does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/jobs/replication/{id}": {
+      "delete": {
+        "description": "This endpoint is aimed to remove specific ID job from jobservice.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete specific ID job.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Delete job ID.",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job deleted successfully."
+          },
+          "400": {
+            "description": "Job ID is invalid or can't remove this job."
+          },
+          "401": {
+            "description": "Only admin has this authority."
+          },
+          "404": {
+            "description": "Project ID does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/jobs/replication/{id}/log": {
+      "get": {
+        "description": "This endpoint let user search job logs filtered by specific ID.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get job logs.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Relevant job ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get job log successfully."
+          },
+          "400": {
+            "description": "Illegal format of provided ID value."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "The specific repository ID's log does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/jobs/scan/{id}/log": {
+      "get": {
+        "description": "This endpoint let user get scan job logs filtered by specific ID.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get job logs.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Relevant job ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get job log successfully."
+          },
+          "400": {
+            "description": "Illegal format of provided ID value."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "The specific repository ID's log does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/labels": {
+      "get": {
+        "description": "This endpoint let user list labels by name, scope and project_id\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "List labels according to the query strings.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The label name.",
+            "name": "name",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The label scope. Valid values are g and p. g for global labels and p for project labels.",
+            "name": "scope",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Relevant project ID, required when scope is p.",
+            "name": "project_id",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The page nubmer.",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The size of per page.",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Label"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameters."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "post": {
+        "description": "This endpoint let user creates a label.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Post creates a label",
+        "parameters": [
+          {
+            "description": "The json object of label.",
+            "name": "label",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Label"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create successfully."
+          },
+          "400": {
+            "description": "Invalid parameters."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "409": {
+            "description": "Label with the same name and same scope already exists."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/labels/{id}": {
+      "get": {
+        "description": "This endpoint let user get the label by specific ID.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get the label specified by ID.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Label ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get successfully.",
+            "schema": {
+              "$ref": "#/definitions/Label"
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "The resource does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "put": {
+        "description": "This endpoint let user update label properties.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update the label properties.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Label ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "The updated label json object.",
+            "name": "label",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Label"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update successfully."
+          },
+          "400": {
+            "description": "Invalid parameters."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "The resource does not exist."
+          },
+          "409": {
+            "description": "The label with the same name already exists."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete the label specified by ID.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete the label specified by ID.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Label ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete successfully."
+          },
+          "400": {
+            "description": "Invalid parameters."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "The resource does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/labels/{id}/resources": {
+      "get": {
+        "description": "This endpoint let user get the resources that the label is referenced by. Only the replication policies are returned for now.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get the resources that the label is referenced by.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Label ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get successfully.",
+            "schema": {
+              "$ref": "#/definitions/Resource"
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "Forbidden."
+          },
+          "404": {
+            "description": "The resource does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/ldap/groups/search": {
+      "get": {
+        "description": "This endpoint searches the available ldap groups based on related configuration parameters. support to search by groupname or groupdn.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Search available ldap groups.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Ldap group name",
+            "name": "groupname",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The LDAP group DN",
+            "name": "groupdn",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search ldap group successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserGroup"
+              }
+            }
+          },
+          "400": {
+            "description": "The Ldap group DN is invalid."
+          },
+          "404": {
+            "description": "No ldap group found."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/ldap/ping": {
+      "post": {
+        "description": "This endpoint ping the available ldap service for test related configuration parameters.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Ping available ldap service.",
+        "parameters": [
+          {
+            "description": "ldap configuration. support input ldap service configuration. If it's a empty request, will load current configuration from the system.",
+            "name": "ldapconf",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/LdapConf"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ping ldap service successfully."
+          },
+          "400": {
+            "description": "Inviald ldap configuration parameters."
+          },
+          "401": {
+            "description": "User need to login first."
+          },
+          "403": {
+            "description": "Only admin has this authority."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/ldap/users/import": {
+      "post": {
+        "description": "This endpoint adds the selected available ldap users to harbor based on related configuration parameters from the system. System will try to guess the user email address and realname, add to harbor user information. \nIf have errors when import user, will return the list of importing failed uid and the failed reason.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Import selected available ldap users.",
+        "parameters": [
+          {
+            "description": "The uid listed for importing. This list will check users validity of ldap service based on configuration from the system.",
+            "name": "uid_list",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LdapImportUsers"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Add ldap users successfully."
+          },
+          "401": {
+            "description": "User need to login first."
+          },
+          "403": {
+            "description": "Only admin has this authority."
+          },
+          "404": {
+            "description": "Failed import some users.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LdapFailedImportUsers"
+              }
+            }
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          }
+        }
+      }
+    },
+    "/ldap/users/search": {
+      "get": {
+        "description": "This endpoint searches the available ldap users based on related configuration parameters. Support searched by input ladp configuration, load configuration from the system and specific filter.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Search available ldap users.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Registered user ID",
+            "name": "username",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search ldap users successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LdapUsers"
+              }
+            }
+          },
+          "401": {
+            "description": "User need to login first."
+          },
+          "403": {
+            "description": "Only admin has this authority."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/logs": {
+      "get": {
+        "description": "This endpoint let user see the recent operation logs of the projects which he is member of\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get recent logs of the projects which the user is a member of",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Username of the operator.",
+            "name": "username",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The name of repository",
+            "name": "repository",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The name of tag",
+            "name": "tag",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The operation",
+            "name": "operation",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The begin timestamp",
+            "name": "begin_timestamp",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The end timestamp",
+            "name": "end_timestamp",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The page nubmer, default is 1.",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The size of per page, default is 10, maximum is 100.",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get the required logs successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AccessLog"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request because of invalid parameters."
+          },
+          "401": {
+            "description": "User need to login first."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/policies/replication": {
+      "get": {
+        "description": "This endpoint let user list filters policies by name and project_id, if name and project_id are nil, list returns all policies\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "List filters policies by name and project_id",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The replication's policy name.",
+            "name": "name",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Relevant project ID.",
+            "name": "project_id",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The page nubmer.",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The size of per page.",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get policy successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RepPolicy"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid project ID."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "post": {
+        "description": "This endpoint let user creates a policy, and if it is enabled, the replication will be triggered right now.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Post creates a policy",
+        "parameters": [
+          {
+            "description": "Create new policy.",
+            "name": "policyinfo",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RepPolicy"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create policy successfully."
+          },
+          "400": {
+            "description": "Invalid project ID or target ID."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "409": {
+            "description": "Policy name already used or policy already exists with the same project and target."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/policies/replication/{id}": {
+      "get": {
+        "description": "This endpoint let user search replication policy by specific ID.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get replication policy.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "policy ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get job policy successfully.",
+            "schema": {
+              "$ref": "#/definitions/RepPolicy"
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "The specific repository ID's policy does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "put": {
+        "description": "This endpoint let user update policy name, description, target and enablement.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Put modifies name, description, target and enablement of policy.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "policy ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Updated properties of the replication policy.",
+            "name": "policyupdate",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RepPolicy"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update job policy content successfully."
+          },
+          "400": {
+            "description": "policy is enabled or target does not exist"
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "The specific repository ID's policy does not exist."
+          },
+          "409": {
+            "description": "Policy name already used or policy already exists with the same project and target."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "description": "This endpoint returns all projects created by Harbor, and can be filtered by project name.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "List projects",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of project.",
+            "name": "name",
+            "in": "query"
+          },
+          {
+            "type": "boolean",
+            "format": "int32",
+            "description": "The project is public or private.",
+            "name": "public",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The name of project owner.",
+            "name": "owner",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The page nubmer, default is 1.",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The size of per page, default is 10, maximum is 100.",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all matched projects.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Project"
+              }
+            },
+            "headers": {
+              "Link": {
+                "type": "string",
+                "description": "Link refers to the previous page and next page"
+              },
+              "X-Total-Count": {
+                "type": "integer",
+                "description": "The total count of projects"
+              }
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "500": {
+            "description": "Internal errors."
+          }
+        }
+      },
+      "post": {
+        "description": "This endpoint is for user to create a new project.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Create a new project.",
+        "parameters": [
+          {
+            "description": "New created project.",
+            "name": "project",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProjectReq"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Project created successfully."
+          },
+          "400": {
+            "description": "Unsatisfied with constraints of the project creation."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "409": {
+            "description": "Project name already exists."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "head": {
+        "description": "This endpoint is used to check if the project name user provided already exist.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Check if the project name user provided already exists.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Project name for checking exists.",
+            "name": "project_name",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project name exists."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "Project name does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/projects/{project_id}": {
+      "get": {
+        "description": "This endpoint returns specific project information by project ID.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Return specific project detail infomation",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Project ID for filtering results.",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return matched project information.",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "500": {
+            "description": "Internal errors."
+          }
+        }
+      },
+      "put": {
+        "description": "This endpoint is aimed to update the properties of a project.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update properties for a selected project.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Selected project ID.",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Updates of project.",
+            "name": "project",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProjectReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated project properties successfully."
+          },
+          "400": {
+            "description": "Illegal format of provided ID value."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission to the project."
+          },
+          "404": {
+            "description": "Project ID does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "delete": {
+        "description": "This endpoint is aimed to delete project by project ID.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete project by projectID",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Project ID of project which will be deleted.",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project is deleted successfully."
+          },
+          "400": {
+            "description": "Invalid project id."
+          },
+          "403": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "Project does not exist."
+          },
+          "412": {
+            "description": "Project contains policies, can not be deleted."
+          },
+          "500": {
+            "description": "Internal errors."
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/logs": {
+      "get": {
+        "description": "This endpoint let user search access logs filtered by operations and date time ranges.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get access logs accompany with a relevant project.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Relevant project ID",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Username of the operator.",
+            "name": "username",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The name of repository",
+            "name": "repository",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The name of tag",
+            "name": "tag",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The operation",
+            "name": "operation",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The begin timestamp",
+            "name": "begin_timestamp",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The end timestamp",
+            "name": "end_timestamp",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The page nubmer, default is 1.",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The size of per page, default is 10, maximum is 100.",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get access log successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AccessLog"
+              }
+            },
+            "headers": {
+              "Link": {
+                "type": "string",
+                "description": "Link refers to the previous page and next page"
+              },
+              "X-Total-Count": {
+                "type": "integer",
+                "description": "The total count of access logs"
+              }
+            }
+          },
+          "400": {
+            "description": "Illegal format of provided ID value."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/members": {
+      "get": {
+        "description": "Get all project member information",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get all project member information",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Relevant project ID.",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The entity name to search.",
+            "name": "entityname",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get project members successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ProjectMemberEntity"
+              }
+            }
+          },
+          "400": {
+            "description": "The project id is invalid."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User in session does not have permission to the project."
+          },
+          "404": {
+            "description": "Project ID does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "post": {
+        "description": "Create project member relationship, the member can be one of the user_member and group_member,  The user_member need to specify user_id or username. If the user already exist in harbor DB, specify the user_id,  If does not exist in harbor DB, it will SearchAndOnBoard the user. The group_member need to specify id or ldap_group_dn. If the group already exist in harbor DB. specify the user group's id,  If does not exist, it will SearchAndOnBoard the group. ",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Create project member",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Relevant project ID.",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "project_member",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ProjectMember"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Project member created successfully."
+          },
+          "400": {
+            "description": "Illegal format of project member or project id is invalid, or LDAP DN is invalid."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User in session does not have permission to the project."
+          },
+          "404": {
+            "description": "Project does not exist, or the username does not found, or the user group does not found."
+          },
+          "409": {
+            "description": "An LDAP user group with same DN already exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/members/{mid}": {
+      "get": {
+        "description": "Get the project member information",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get the project member information",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Relevant project ID.",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "The member ID",
+            "name": "mid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project member retrieved successfully.",
+            "schema": {
+              "$ref": "#/definitions/ProjectMemberEntity"
+            }
+          },
+          "400": {
+            "description": "Illegal format of project member or invalid project id, member id."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User in session does not have permission to the project."
+          },
+          "404": {
+            "description": "Project or projet member does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "put": {
+        "description": "Update project member relationship",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update project member",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Relevant project ID.",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Member ID.",
+            "name": "mid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "role",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/RoleRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project member updated successfully."
+          },
+          "400": {
+            "description": "Invalid role id, it should be 1,2 or 3, or invalid project id, or invalid member id."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User in session does not have permission to the project."
+          },
+          "404": {
+            "description": "project or project member does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete project member",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Relevant project ID.",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Member ID.",
+            "name": "mid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project member deleted successfully."
+          },
+          "400": {
+            "description": "The project id or project member id is invalid."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User in session does not have permission to the project."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/metadatas": {
+      "get": {
+        "description": "This endpoint returns metadata of the project specified by project ID.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get project metadata.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "The ID of project.",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get metadata successfully.",
+            "schema": {
+              "$ref": "#/definitions/ProjectMetadata"
+            }
+          },
+          "401": {
+            "description": "User need to login first."
+          },
+          "500": {
+            "description": "Internal server errors."
+          }
+        }
+      },
+      "post": {
+        "description": "This endpoint is aimed to add metadata of a project.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Add metadata for the project.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Selected project ID.",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "The metadata of project.",
+            "name": "metadata",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProjectMetadata"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Add metadata successfully."
+          },
+          "400": {
+            "description": "Invalid request."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission to the project."
+          },
+          "404": {
+            "description": "Project ID does not exist."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "description": "Internal server errors."
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/metadatas/{meta_name}": {
+      "get": {
+        "description": "This endpoint returns specified metadata of a project.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get project metadata",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Project ID for filtering results.",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The name of metadat.",
+            "name": "meta_name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get metadata successfully.",
+            "schema": {
+              "$ref": "#/definitions/ProjectMetadata"
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "500": {
+            "description": "Internal server errors."
+          }
+        }
+      },
+      "put": {
+        "description": "This endpoint is aimed to update the metadata of a project.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update metadata of a project.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "The ID of project.",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The name of metadat.",
+            "name": "meta_name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated metadata successfully."
+          },
+          "400": {
+            "description": "Invalid request."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission to the project."
+          },
+          "404": {
+            "description": "Project or metadata does not exist."
+          },
+          "500": {
+            "description": "Internal server errors."
+          }
+        }
+      },
+      "delete": {
+        "description": "This endpoint is aimed to delete metadata of a project.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete metadata of a project",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "The ID of project.",
+            "name": "project_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The name of metadat.",
+            "name": "meta_name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Metadata is deleted successfully."
+          },
+          "400": {
+            "description": "Invalid requst."
+          },
+          "403": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "Project or metadata does not exist."
+          },
+          "500": {
+            "description": "Internal server errors."
+          }
+        }
+      }
+    },
+    "/replications": {
+      "post": {
+        "description": "This endpoint is used to trigger a replication.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Trigger the replication according to the specified policy.",
+        "parameters": [
+          {
+            "description": "The ID of replication policy.",
+            "name": "policy ID",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Replication"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trigger the replication successfully."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "The policy does not exist."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/repositories": {
+      "get": {
+        "description": "This endpoint lets user search repositories accompanying with relevant project ID and repo name. Repositories can be sorted by repo name, creation_time, update_time in either ascending or descending order.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get repositories accompany with relevant project and repo name.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "Relevant project ID.",
+            "name": "project_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Repo name for filtering results.",
+            "name": "q",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Sort method, valid values include: 'name', '-name', 'creation_time', '-creation_time', 'update_time', '-update_time'. Here '-' stands for descending order.\n",
+            "name": "sort",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "The ID of label used to filter the result.",
+            "name": "label_id",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The page nubmer, default is 1.",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The size of per page, default is 10, maximum is 100.",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get repositories successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Repository"
+              }
+            },
+            "headers": {
+              "Link": {
+                "type": "string",
+                "description": "Link refers to the previous page and next page"
+              },
+              "X-Total-Count": {
+                "type": "integer",
+                "description": "The total count of repositories"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid project ID."
+          },
+          "403": {
+            "description": "Project is not public or current user is irrelevant to the repository."
+          },
+          "404": {
+            "description": "Project ID does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/repositories/scanAll": {
+      "post": {
+        "description": "The server will launch different jobs to scan each image on the regsitry, so this is equivalent to calling  the API to scan the image one by one in background, so there's no way to track the overall status of the \"scan all\" action.  Only system adim has permission to call this API.\n",
+        "summary": "Scan all images of the registry.",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "When this parm is set only the images under the project identified by the project_id will be scanned.",
+            "name": "project_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "The action is successully taken in the background.  If some images are failed to scan it will only be reflected in the job status."
+          },
+          "401": {
+            "description": "User needs to login or call the API with correct credentials."
+          },
+          "403": {
+            "description": "User doesn't have permission to perform the action."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "description": "Failed to initiate the action."
+          },
+          "503": {
+            "description": "Harbor is not deployed with Clair."
+          }
+        }
+      }
+    },
+    "/repositories/top": {
+      "get": {
+        "description": "This endpoint aims to let users see the most popular public repositories\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get public repositories which are accessed most.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The number of the requested public repositories, default is 10 if not provided.",
+            "name": "count",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get popular repositories successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Repository"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request because of invalid count."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/repositories/{repo_name}": {
+      "put": {
+        "description": "This endpoint is used to update description of the repository.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update description of the repository.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of repository which will be deleted.",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "The description of the repository.",
+            "name": "description",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RepositoryDescription"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update successfully."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "403": {
+            "description": "Forbidden."
+          },
+          "404": {
+            "description": "Repository not found."
+          }
+        }
+      },
+      "delete": {
+        "description": "This endpoint let user delete a repository with name.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete a repository.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of repository which will be deleted.",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete successfully."
+          },
+          "400": {
+            "description": "Invalid repo_name."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "403": {
+            "description": "Forbidden."
+          },
+          "404": {
+            "description": "Repository not found."
+          }
+        }
+      }
+    },
+    "/repositories/{repo_name}/labels": {
+      "get": {
+        "description": "Get labels of a repository specified by the repo_name.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get labels of a repository.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of repository.",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Label"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "403": {
+            "description": "Forbidden. User should have read permisson for the repository to perform the action."
+          },
+          "404": {
+            "description": "Repository not found."
+          }
+        }
+      },
+      "post": {
+        "description": "Add a label to the repository.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Add a label to the repository.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of repository.",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Only the ID property is required.",
+            "name": "label",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Label"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "403": {
+            "description": "Forbidden. User should have write permisson for the repository to perform the action."
+          },
+          "404": {
+            "description": "Resource not found."
+          }
+        }
+      }
+    },
+    "/repositories/{repo_name}/labels/{label_id}": {
+      "delete": {
+        "description": "Delete the label from the repository specified by the repo_name.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete label from the repository.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of repository.",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "The ID of label.",
+            "name": "label_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "403": {
+            "description": "Forbidden. User should have write permisson for the repository to perform the action."
+          },
+          "404": {
+            "description": "Resource not found."
+          }
+        }
+      }
+    },
+    "/repositories/{repo_name}/signatures": {
+      "get": {
+        "description": "This endpoint aims to retrieve signature information of a repository, the data is\nfrom the nested notary instance of Harbor.\nIf the repository does not have any signature information in notary, this API will\nreturn an empty list with response code 200, instead of 404\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get signature information of a repository",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "repository name.",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrieved signatures.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RepoSignature"
+              }
+            }
+          },
+          "500": {
+            "description": "Server side error."
+          }
+        }
+      }
+    },
+    "/repositories/{repo_name}/tags": {
+      "get": {
+        "description": "This endpoint aims to retrieve tags from a relevant repository. If deployed with Notary, the signature property of response represents whether the image is singed or not. If the property is null, the image is unsigned.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get tags of a relevant repository.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Relevant repository name.",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "A list of comma separated label IDs.",
+            "name": "label_ids",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get tags successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DetailedTag"
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/repositories/{repo_name}/tags/{tag}": {
+      "get": {
+        "description": "This endpoint aims to retrieve the tag of the repository. If deployed with Notary, the signature property of response represents whether the image is singed or not. If the property is null, the image is unsigned.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get the tag of the repository.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Relevant repository name.",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Tag of the repository.",
+            "name": "tag",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get tag successfully.",
+            "schema": {
+              "$ref": "#/definitions/DetailedTag"
+            }
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "delete": {
+        "description": "This endpoint let user delete tags with repo name and tag.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete a tag in a repository.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of repository which will be deleted.",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Tag of a repository.",
+            "name": "tag",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete tag successfully."
+          },
+          "400": {
+            "description": "Invalid repo_name."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "403": {
+            "description": "Forbidden."
+          },
+          "404": {
+            "description": "Repository or tag not found."
+          }
+        }
+      }
+    },
+    "/repositories/{repo_name}/tags/{tag}/labels": {
+      "get": {
+        "description": "Get labels of an image specified by the repo_name and tag.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get labels of an image.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of repository.",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The tag of the image.",
+            "name": "tag",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Label"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "403": {
+            "description": "Forbidden. User should have read permisson for the image to perform the action."
+          },
+          "404": {
+            "description": "Resource not found."
+          }
+        }
+      },
+      "post": {
+        "description": "Add a label to the image.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Add a label to image.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of repository.",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The tag of the image.",
+            "name": "tag",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Only the ID property is required.",
+            "name": "label",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Label"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "403": {
+            "description": "Forbidden. User should have write permisson for the image to perform the action."
+          },
+          "404": {
+            "description": "Resource not found."
+          }
+        }
+      }
+    },
+    "/repositories/{repo_name}/tags/{tag}/labels/{label_id}": {
+      "delete": {
+        "description": "Delete the label from the image specified by the repo_name and tag.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete label from the image.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The name of repository.",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The tag of the image.",
+            "name": "tag",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "The ID of label.",
+            "name": "label_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "403": {
+            "description": "Forbidden. User should have write permisson for the image to perform the action."
+          },
+          "404": {
+            "description": "Resource not found."
+          }
+        }
+      }
+    },
+    "/repositories/{repo_name}/tags/{tag}/manifest": {
+      "get": {
+        "description": "This endpoint aims to retreive manifests from a relevant repository.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get manifests of a relevant repository.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Repository name",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Tag name",
+            "name": "tag",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "The version of manifest, valid value are \"v1\" and \"v2\", default is \"v2\"",
+            "name": "version",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrieved manifests from a relevant repository successfully.",
+            "schema": {
+              "$ref": "#/definitions/Manifest"
+            }
+          },
+          "404": {
+            "description": "Retrieved manifests from a relevant repository not found."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/repositories/{repo_name}/tags/{tag}/scan": {
+      "post": {
+        "description": "Trigger jobservice to call Clair API to scan the image identified by the repo_name and tag.  Only project admins have permission to scan images under the project.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Scan the image.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Repository name",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Tag name",
+            "name": "tag",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created the job to scan image."
+          },
+          "401": {
+            "description": "User needs to login or call the API with correct credentials."
+          },
+          "403": {
+            "description": "User doesn't have permission to perform the action."
+          },
+          "404": {
+            "description": "The image does not exist in Harbor."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "503": {
+            "description": "Harbor is not deployed with Clair."
+          }
+        }
+      }
+    },
+    "/repositories/{repo_name}/tags/{tag}/vulnerability/details": {
+      "get": {
+        "description": "Call Clair API to get the vulnerability based on the previous successful scan.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get vulnerability details of the image.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Repository name",
+            "name": "repo_name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Tag name",
+            "name": "tag",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the vulnerabilities.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/VulnerabilityItem"
+              }
+            }
+          },
+          "401": {
+            "description": "User needs to login or call the API with correct credentials."
+          },
+          "403": {
+            "description": "User doesn't have permission to perform the action."
+          },
+          "404": {
+            "description": "The image does not exist in Harbor."
+          },
+          "503": {
+            "description": "Harbor is not deployed with Clair."
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "description": "The Search endpoint returns information about the projects ,repositories  and helm charts offered at public status or related to the current logged in user. The response includes the project, repository list and charts in a proper display order.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Search for projects, repositories and helm charts",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Search parameter for project and repository name.",
+            "name": "q",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of search results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Search"
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/statistics": {
+      "get": {
+        "description": "This endpoint is aimed to statistic all of the projects number and repositories number relevant to the logined user, also the public projects number and repositories number. If the user is admin, he can also get total projects number and total repositories number.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get projects number and repositories number relevant to the user",
+        "responses": {
+          "200": {
+            "description": "Get the projects number and repositories number relevant to the user successfully.",
+            "schema": {
+              "$ref": "#/definitions/StatisticMap"
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/system/gc": {
+      "get": {
+        "description": "This endpoint let user get latest ten gc results.",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get gc results.",
+        "responses": {
+          "200": {
+            "description": "Get gc results successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GCResult"
+              }
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/system/gc/schedule": {
+      "get": {
+        "description": "This endpoint is for get schedule of gc job.",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get gc's schedule.",
+        "responses": {
+          "200": {
+            "description": "Get gc's schedule.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GCSchedule"
+              }
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "Only admin has this authority."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "put": {
+        "description": "This endpoint is for update gc schedule.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update gc's schedule.",
+        "parameters": [
+          {
+            "description": "Updates of gs's schedule.",
+            "name": "schedule",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GCSchedule"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated replication's target successfully."
+          },
+          "400": {
+            "description": "The target is associated with policy which is enabled."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "404": {
+            "description": "Target ID does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "post": {
+        "description": "This endpoint is for update gc schedule.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Create a gc schedule.",
+        "parameters": [
+          {
+            "description": "Updates of gs's schedule.",
+            "name": "schedule",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GCSchedule"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated replication's target successfully."
+          },
+          "400": {
+            "description": "The target is associated with policy which is enabled."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "404": {
+            "description": "Target ID does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/system/gc/{id}": {
+      "get": {
+        "description": "This endpoint let user get gc status filtered by specific ID.",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get gc status.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Relevant job ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get gc results successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GCResult"
+              }
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/system/gc/{id}/log": {
+      "get": {
+        "description": "This endpoint let user get gc job logs filtered by specific ID.",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get gc job log.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Relevant job ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get job log successfully."
+          },
+          "400": {
+            "description": "Illegal format of provided ID value."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "404": {
+            "description": "The specific gc ID's log does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/systeminfo": {
+      "get": {
+        "description": "This API is for retrieving general system info, this can be called by anonymous request.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get general system info",
+        "responses": {
+          "200": {
+            "description": "Get general info successfully.",
+            "schema": {
+              "$ref": "#/definitions/GeneralInfo"
+            }
+          },
+          "500": {
+            "description": "Unexpected internal error."
+          }
+        }
+      }
+    },
+    "/systeminfo/getcert": {
+      "get": {
+        "description": "This endpoint is for downloading a default root certificate.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get default root certificate.",
+        "responses": {
+          "200": {
+            "description": "Get default root certificate successfully."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "404": {
+            "description": "Not found the default root certificate."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/systeminfo/volumes": {
+      "get": {
+        "description": "This endpoint is for retrieving system volume info that only provides for admin user.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get system volume info (total/free size).",
+        "responses": {
+          "200": {
+            "description": "Get system volumes successfully.",
+            "schema": {
+              "$ref": "#/definitions/SystemInfo"
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/targets": {
+      "get": {
+        "description": "This endpoint let user list filters targets by name, if name is nil, list returns all targets.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "List filters targets by name.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "The replication's target name.",
+            "name": "name",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get policy successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RepTarget"
+              }
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "post": {
+        "description": "This endpoint is for user to create a new replication target.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Create a new replication target.",
+        "parameters": [
+          {
+            "description": "New created replication target.",
+            "name": "reptarget",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RepTargetPost"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Replication target created successfully."
+          },
+          "400": {
+            "description": "Unsatisfied with constraints of the target creation."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "409": {
+            "description": "Replication target name already exists."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/targets/ping": {
+      "post": {
+        "description": "This endpoint is for ping validates whether the target is reachable and whether the credential is valid.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Ping validates target.",
+        "parameters": [
+          {
+            "description": "The target object.",
+            "name": "target",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PingTarget"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ping target successfully."
+          },
+          "400": {
+            "description": "Target id is invalid/ endpoint is needed/ invaild URL/ network issue."
+          },
+          "401": {
+            "description": "User need to log in first or wrong username/password for remote target."
+          },
+          "404": {
+            "description": "Target not found."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/targets/{id}": {
+      "get": {
+        "description": "This endpoint is for get specific replication's target.",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get replication's target.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "The replication's target ID.",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get replication's target successfully.",
+            "schema": {
+              "$ref": "#/definitions/RepTarget"
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "Replication's target not found"
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "put": {
+        "description": "This endpoint is for update specific replication's target.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update replication's target.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "The replication's target ID.",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Updates of replication's target.",
+            "name": "repo_target",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PutTarget"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated replication's target successfully."
+          },
+          "400": {
+            "description": "The target is associated with policy which is enabled."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "Target ID does not exist."
+          },
+          "409": {
+            "description": "Target name or endpoint is already used."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "delete": {
+        "description": "This endpoint is for to delete specific replication's target.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete specific replication's target.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "The replication's target ID.",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Replication's target deleted successfully."
+          },
+          "400": {
+            "description": "Replication's target ID is invalid or the target is used by policies."
+          },
+          "401": {
+            "description": "Only admin has this authority."
+          },
+          "404": {
+            "description": "Replication's target does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/targets/{id}/policies/": {
+      "get": {
+        "description": "This endpoint list policies filter with specific replication's target ID.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "List the target relevant policies.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "The replication's target ID.",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get relevant policies successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RepPolicy"
+              }
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "404": {
+            "description": "Replication's target not found"
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/usergroups": {
+      "get": {
+        "description": "Get all user groups information",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get all user groups information",
+        "responses": {
+          "200": {
+            "description": "Get user group successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserGroup"
+              }
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User in session does not have permission to the user group."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "post": {
+        "description": "Create user group information",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Create user group",
+        "parameters": [
+          {
+            "name": "usergroup",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserGroup"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User group created successfully."
+          },
+          "400": {
+            "description": "Invalid LDAP group DN."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User in session does not have permission to the user group."
+          },
+          "404": {
+            "description": "The LDAP group is not found."
+          },
+          "409": {
+            "description": "An LDAP user group with same DN already exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/usergroups/{group_id}": {
+      "get": {
+        "description": "Get user group information",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get user group information",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Group ID",
+            "name": "group_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User group get successfully.",
+            "schema": {
+              "$ref": "#/definitions/UserGroup"
+            }
+          },
+          "400": {
+            "description": "The user group id is invalid."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User in session does not have permission to the user group."
+          },
+          "404": {
+            "description": "User group does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "put": {
+        "description": "Update user group information",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update group information",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "Group ID",
+            "name": "group_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "usergroup",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserGroup"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User group updated successfully."
+          },
+          "400": {
+            "description": "The user group id is invalid."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "Only admin has this authority."
+          },
+          "404": {
+            "description": "User group does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete user group",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete user group",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "group_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User group deleted successfully."
+          },
+          "400": {
+            "description": "The user group id is invalid."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "Only admin has this authority."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "description": "This endpoint is for user to search registered users, support for filtering results with username.Notice, by now this operation is only for administrator.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get registered users of Harbor.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Username for filtering results.",
+            "name": "username",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Email for filtering results.",
+            "name": "email",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The page nubmer, default is 1.",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "The size of per page.",
+            "name": "page_size",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Searched for users of Harbor successfully.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "post": {
+        "description": "This endpoint is to create a user if the user does not already exist.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Creates a new user account.",
+        "parameters": [
+          {
+            "description": "New created user.",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User created successfully."
+          },
+          "400": {
+            "description": "Unsatisfied with constraints of the user creation."
+          },
+          "403": {
+            "description": "User registration can only be used by admin role user when self-registration is off."
+          },
+          "415": {
+            "$ref": "#/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "description": "This endpoint is to get the current user infomation.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get current user info.",
+        "responses": {
+          "200": {
+            "description": "Get current user information successfully.",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "User need to log in first."
+          }
+        }
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "description": "Get user's profile with user id.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get a user's profile.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int",
+            "description": "Registered user ID",
+            "name": "user_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get user's profile successfully."
+          },
+          "400": {
+            "description": "Invalid user ID."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "404": {
+            "description": "User ID does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "put": {
+        "description": "This endpoint let a registered user change his profile.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update a registered user to change his profile.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int",
+            "description": "Registered user ID",
+            "name": "user_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Only email, realname and comment can be modified.",
+            "name": "profile",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserProfile"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated user's profile successfully."
+          },
+          "400": {
+            "description": "Invalid user ID."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "404": {
+            "description": "User ID does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      },
+      "delete": {
+        "description": "This endpoint let administrator of Harbor mark a registered user as\nbe removed.It actually won't be deleted from DB.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Mark a registered user as be removed.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int",
+            "description": "User ID for marking as to be removed.",
+            "name": "user_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Marked user as be removed successfully."
+          },
+          "400": {
+            "description": "Invalid user ID."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "404": {
+            "description": "User ID does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/users/{user_id}/password": {
+      "put": {
+        "description": "This endpoint is for user to update password. Users with the admin role can change any user's password. Guest users can change only their own password.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Change the password on a user that already exists.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int",
+            "description": "Registered user ID.",
+            "name": "user_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Password to be updated, the attribute 'old_password' is optional when the API is called by the system administrator.",
+            "name": "password",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Password"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated password successfully."
+          },
+          "400": {
+            "description": "Invalid user ID; Old password is blank; New password is blank."
+          },
+          "401": {
+            "description": "Don't have authority to change password. Please check login status."
+          },
+          "403": {
+            "description": "The caller does not have permission to update the password of the user with given ID, or the old password in request body is not correct."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    },
+    "/users/{user_id}/sysadmin": {
+      "put": {
+        "description": "This endpoint let a registered user change to be an administrator\nof Harbor.\n",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update a registered user to change to be an administrator of Harbor.",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int",
+            "description": "Registered user ID",
+            "name": "user_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Toggle a user to admin or not.",
+            "name": "has_admin_role",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/HasAdminRole"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated user's admin role successfully."
+          },
+          "400": {
+            "description": "Invalid user ID."
+          },
+          "401": {
+            "description": "User need to log in first."
+          },
+          "403": {
+            "description": "User does not have permission of admin role."
+          },
+          "404": {
+            "description": "User ID does not exist."
+          },
+          "500": {
+            "description": "Unexpected internal errors."
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AccessLog": {
+      "type": "object",
+      "properties": {
+        "log_id": {
+          "description": "The ID of the log entry.",
+          "type": "integer"
+        },
+        "op_time": {
+          "description": "The time when this operation is triggered.",
+          "type": "string"
+        },
+        "operation": {
+          "description": "The operation against the repository in this log entry.",
+          "type": "string"
+        },
+        "repo_name": {
+          "description": "Name of the repository in this log entry.",
+          "type": "string"
+        },
+        "repo_tag": {
+          "description": "Tag of the repository in this log entry.",
+          "type": "string"
+        },
+        "username": {
+          "description": "Username of the user in this log entry.",
+          "type": "string"
+        }
+      }
+    },
+    "BoolConfigItem": {
+      "type": "object",
+      "properties": {
+        "editable": {
+          "description": "The configure item can be updated or not",
+          "type": "boolean"
+        },
+        "value": {
+          "description": "The boolean value of current config item",
+          "type": "boolean"
+        }
+      }
+    },
+    "ChartAPIError": {
+      "description": "The error object returned by chart repository API",
+      "type": "object",
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "The error message returned by the chart API",
+          "type": "string"
+        }
+      }
+    },
+    "ChartInfoEntry": {
+      "description": "The object contains basic chart information",
+      "type": "object",
+      "required": [
+        "name",
+        "total_versions",
+        "created"
+      ],
+      "properties": {
+        "created": {
+          "description": "The created time of chart",
+          "type": "string"
+        },
+        "deprecated": {
+          "description": "Flag to indicate if the chart is deprecated",
+          "type": "boolean"
+        },
+        "home": {
+          "description": "The home website of chart",
+          "type": "string"
+        },
+        "icon": {
+          "description": "The icon path of chart",
+          "type": "string"
+        },
+        "name": {
+          "description": "Name of chart",
+          "type": "string"
+        },
+        "total_versions": {
+          "description": "Total count of chart versions",
+          "type": "integer"
+        }
+      }
+    },
+    "ChartInfoList": {
+      "description": "The chart list under the project",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ChartInfoEntry"
+      }
+    },
+    "ChartMetadata": {
+      "description": "The metadata of chart version",
+      "type": "object",
+      "required": [
+        "name",
+        "version",
+        "engine",
+        "icon",
+        "apiVersion",
+        "appVersion"
+      ],
+      "properties": {
+        "apiVersion": {
+          "description": "The API version of this chart",
+          "type": "string"
+        },
+        "appVersion": {
+          "description": "The version of the application enclosed in the chart",
+          "type": "string"
+        },
+        "deprecated": {
+          "description": "Whether or not this chart is deprecated",
+          "type": "boolean"
+        },
+        "description": {
+          "description": "A one-sentence description of chart",
+          "type": "string"
+        },
+        "engine": {
+          "description": "The name of template engine",
+          "type": "string"
+        },
+        "home": {
+          "description": "The URL to the relevant project page",
+          "type": "string"
+        },
+        "icon": {
+          "description": "The URL to an icon file",
+          "type": "string"
+        },
+        "keywords": {
+          "description": "A list of string keywords",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "description": "The name of the chart",
+          "type": "string"
+        },
+        "sources": {
+          "description": "The URL to the source code of chart",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "version": {
+          "description": "A SemVer 2 version of chart",
+          "type": "string"
+        }
+      }
+    },
+    "ChartVersion": {
+      "description": "A specified chart entry",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/ChartMetadata"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "created": {
+              "description": "The created time of the chart entry",
+              "type": "string"
+            },
+            "digest": {
+              "description": "The digest value of the chart entry",
+              "type": "string"
+            },
+            "removed": {
+              "description": "A flag to indicate if the chart entry is removed",
+              "type": "boolean"
+            },
+            "urls": {
+              "description": "The urls of the chart entry",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ChartVersionDetails": {
+      "description": "The detailed information of the chart entry",
+      "type": "object",
+      "properties": {
+        "dependencies": {
+          "$ref": "#/definitions/Dependency"
+        },
+        "files": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "$ref": "#/definitions/ChartVersion"
+        },
+        "security": {
+          "$ref": "#/definitions/SecurityReport"
+        },
+        "values": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "ChartVersions": {
+      "description": "A list of chart entry",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ChartVersion"
+      }
+    },
+    "ComponentOverviewEntry": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "description": "number of the components with certain severity.",
+          "type": "integer"
+        },
+        "severity": {
+          "description": "1-None/Negligible, 2-Unknown, 3-Low, 4-Medium, 5-High",
+          "type": "integer"
+        }
+      }
+    },
+    "Configurations": {
+      "type": "object",
+      "properties": {
+        "auth_mode": {
+          "description": "The auth mode of current system, such as \"db_auth\", \"ldap_auth\"",
+          "type": "string"
+        },
+        "email_from": {
+          "description": "The sender name for Email notification.",
+          "type": "string"
+        },
+        "email_host": {
+          "description": "The hostname of SMTP server that sends Email notification.",
+          "type": "string"
+        },
+        "email_identity": {
+          "description": "By default it's empty so the email_username is picked.",
+          "type": "string"
+        },
+        "email_insecure": {
+          "description": "Whether or not the certificate will be verified when Harbor tries to access the email server.",
+          "type": "boolean"
+        },
+        "email_port": {
+          "description": "The port of SMTP server.",
+          "type": "integer"
+        },
+        "email_ssl": {
+          "description": "When it's set to true the system will access Email server via TLS by default.  If it's set to false, it still will handle \"STARTTLS\" from server side.",
+          "type": "boolean"
+        },
+        "email_username": {
+          "description": "The username for authenticate against SMTP server.",
+          "type": "string"
+        },
+        "ldap_base_dn": {
+          "description": "The Base DN for LDAP binding.",
+          "type": "string"
+        },
+        "ldap_filter": {
+          "description": "The filter for LDAP binding.",
+          "type": "string"
+        },
+        "ldap_group_admin_dn": {
+          "description": "Specify the ldap group which have the same privilege with Harbor admin.",
+          "type": "string"
+        },
+        "ldap_group_attribute_name": {
+          "description": "The attribute which is used as identity of the LDAP group, default is cn.",
+          "type": "string"
+        },
+        "ldap_group_base_dn": {
+          "description": "The base DN to search LDAP group.",
+          "type": "string"
+        },
+        "ldap_group_search_filter": {
+          "description": "The filter to search the ldap group.",
+          "type": "string"
+        },
+        "ldap_group_search_scope": {
+          "description": "The scope to search ldap. '0-LDAP_SCOPE_BASE, 1-LDAP_SCOPE_ONELEVEL, 2-LDAP_SCOPE_SUBTREE'",
+          "type": "integer"
+        },
+        "ldap_scope": {
+          "description": "0-LDAP_SCOPE_BASE, 1-LDAP_SCOPE_ONELEVEL, 2-LDAP_SCOPE_SUBTREE",
+          "type": "integer"
+        },
+        "ldap_search_dn": {
+          "description": "The DN of the user to do the search.",
+          "type": "string"
+        },
+        "ldap_timeout": {
+          "description": "timeout in seconds for connection to LDAP server.",
+          "type": "integer"
+        },
+        "ldap_uid": {
+          "description": "The attribute which is used as identity for the LDAP binding, such as \"CN\" or \"SAMAccountname\"",
+          "type": "string"
+        },
+        "ldap_url": {
+          "description": "The URL of LDAP server.",
+          "type": "string"
+        },
+        "project_creation_restriction": {
+          "description": "This attribute restricts what users have the permission to create project.  It can be \"everyone\" or \"adminonly\".",
+          "type": "string"
+        },
+        "read_only": {
+          "description": "'docker push' is prohibited by Harbor if you set it to true.   ",
+          "type": "boolean"
+        },
+        "scan_all_policy": {
+          "type": "object",
+          "properties": {
+            "parameter": {
+              "description": "The parameters of the policy, the values are dependant on the type of the policy.",
+              "type": "object",
+              "properties": {
+                "daily_time": {
+                  "description": "The offest in seconds of UTC 0 o'clock, only valid when the policy type is \"daily\"",
+                  "type": "integer"
+                }
+              }
+            },
+            "type": {
+              "description": "The type of scan all policy, currently the valid values are \"none\" and \"daily\"",
+              "type": "string"
+            }
+          }
+        },
+        "self_registration": {
+          "description": "Whether the Harbor instance supports self-registration.  If it's set to false, admin need to add user to the instance.",
+          "type": "boolean"
+        },
+        "token_expiration": {
+          "description": "The expiration time of the token for internal Registry, in minutes.",
+          "type": "integer"
+        },
+        "verify_remote_cert": {
+          "description": "Whether or not the certificate will be verified when Harbor tries to access a remote Harbor instance for replication.",
+          "type": "boolean"
+        }
+      }
+    },
+    "ConfigurationsResponse": {
+      "type": "object",
+      "properties": {
+        "auth_mode": {
+          "description": "The auth mode of current system, such as \"db_auth\", \"ldap_auth\"",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "email_from": {
+          "description": "The sender name for Email notification.",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "email_host": {
+          "description": "The hostname of SMTP server that sends Email notification.",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "email_identity": {
+          "description": "By default it's empty so the email_username is picked.",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "email_insecure": {
+          "description": "Whether or not the certificate will be verified when Harbor tries to access the email server.",
+          "$ref": "#/definitions/BoolConfigItem"
+        },
+        "email_port": {
+          "description": "The port of SMTP server.",
+          "$ref": "#/definitions/IntegerConfigItem"
+        },
+        "email_ssl": {
+          "description": "When it's set to true the system will access Email server via TLS by default.  If it's set to false, it still will handle \"STARTTLS\" from server side.",
+          "$ref": "#/definitions/BoolConfigItem"
+        },
+        "email_username": {
+          "description": "The username for authenticate against SMTP server.",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "ldap_base_dn": {
+          "description": "The Base DN for LDAP binding.",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "ldap_filter": {
+          "description": "The filter for LDAP binding.",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "ldap_group_admin_dn": {
+          "description": "Specify the ldap group which have the same privilege with Harbor admin.",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "ldap_group_attribute_name": {
+          "description": "The attribute which is used as identity of the LDAP group, default is cn.",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "ldap_group_base_dn": {
+          "description": "The base DN to search LDAP group.",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "ldap_group_search_filter": {
+          "description": "The filter to search the ldap group.",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "ldap_group_search_scope": {
+          "description": "The scope to search ldap. '0-LDAP_SCOPE_BASE, 1-LDAP_SCOPE_ONELEVEL, 2-LDAP_SCOPE_SUBTREE'",
+          "$ref": "#/definitions/IntegerConfigItem"
+        },
+        "ldap_scope": {
+          "description": "0-LDAP_SCOPE_BASE, 1-LDAP_SCOPE_ONELEVEL, 2-LDAP_SCOPE_SUBTREE",
+          "type": "integer"
+        },
+        "ldap_search_dn": {
+          "description": "The DN of the user to do the search.",
+          "type": "string"
+        },
+        "ldap_timeout": {
+          "description": "timeout in seconds for connection to LDAP server.",
+          "$ref": "#/definitions/IntegerConfigItem"
+        },
+        "ldap_uid": {
+          "description": "The attribute which is used as identity for the LDAP binding, such as \"CN\" or \"SAMAccountname\"",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "ldap_url": {
+          "description": "The URL of LDAP server.",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "project_creation_restriction": {
+          "description": "This attribute restricts what users have the permission to create project.  It can be \"everyone\" or \"adminonly\".",
+          "$ref": "#/definitions/StringConfigItem"
+        },
+        "read_only": {
+          "description": "'docker push' is prohibited by Harbor if you set it to true.   ",
+          "$ref": "#/definitions/BoolConfigItem"
+        },
+        "scan_all_policy": {
+          "type": "object",
+          "properties": {
+            "parameter": {
+              "description": "The parameters of the policy, the values are dependant on the type of the policy.",
+              "type": "object",
+              "properties": {
+                "daily_time": {
+                  "description": "The offest in seconds of UTC 0 o'clock, only valid when the policy type is \"daily\"",
+                  "type": "integer"
+                }
+              }
+            },
+            "type": {
+              "description": "The type of scan all policy, currently the valid values are \"none\" and \"daily\"",
+              "type": "string"
+            }
+          }
+        },
+        "self_registration": {
+          "description": "Whether the Harbor instance supports self-registration.  If it's set to false, admin need to add user to the instance.",
+          "$ref": "#/definitions/BoolConfigItem"
+        },
+        "token_expiration": {
+          "description": "The expiration time of the token for internal Registry, in minutes.",
+          "$ref": "#/definitions/IntegerConfigItem"
+        },
+        "verify_remote_cert": {
+          "description": "Whether or not the certificate will be verified when Harbor tries to access a remote Harbor instance for replication.",
+          "$ref": "#/definitions/BoolConfigItem"
+        }
+      }
+    },
+    "Dependency": {
+      "description": "Another chart the chart depends on",
+      "type": "object",
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "description": "The name of the chart denpendency",
+          "type": "string"
+        },
+        "repository": {
+          "description": "The URL to the repository",
+          "type": "string"
+        },
+        "version": {
+          "description": "The version of the chart dependency",
+          "type": "string"
+        }
+      }
+    },
+    "DetailedTag": {
+      "type": "object",
+      "properties": {
+        "architecture": {
+          "description": "The architecture of the image.",
+          "type": "string"
+        },
+        "author": {
+          "description": "The author of the image.",
+          "type": "string"
+        },
+        "created": {
+          "description": "The build time of the image.",
+          "type": "string"
+        },
+        "digest": {
+          "description": "The digest of the tag.",
+          "type": "string"
+        },
+        "docker_version": {
+          "description": "The version of docker which builds the image.",
+          "type": "string"
+        },
+        "labels": {
+          "description": "The label list.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Label"
+          }
+        },
+        "name": {
+          "description": "The name of the tag.",
+          "type": "string"
+        },
+        "os": {
+          "description": "The os of the image.",
+          "type": "string"
+        },
+        "scan_overview": {
+          "description": "The overview of the scan result.  This is an optional property.",
+          "type": "object",
+          "properties": {
+            "components": {
+              "description": "The components overview of the image.",
+              "type": "object",
+              "properties": {
+                "summary": {
+                  "description": "List of number of components of different severities.",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ComponentOverviewEntry"
+                  }
+                },
+                "total": {
+                  "description": "Total number of the components in this image.",
+                  "type": "integer"
+                }
+              }
+            },
+            "details_key": {
+              "description": "The top layer name of this image in Clair, this is for calling Clair API to get the vulnerability list of this image.",
+              "type": "string"
+            },
+            "digest": {
+              "description": "The digest of the image.",
+              "type": "string"
+            },
+            "job_id": {
+              "description": "The ID of the job on jobservice to scan the image.",
+              "type": "integer"
+            },
+            "scan_status": {
+              "description": "The status of the scan job, it can be \"pendnig\", \"running\", \"finished\", \"error\".",
+              "type": "string"
+            },
+            "severity": {
+              "description": "0-Not scanned, 1-Negligible, 2-Unknown, 3-Low, 4-Medium, 5-High",
+              "type": "integer"
+            }
+          }
+        },
+        "signature": {
+          "description": "The signature of image, defined by RepoSignature. If it is null, the image is unsigned.",
+          "type": "object"
+        },
+        "size": {
+          "description": "The size of the image.",
+          "type": "integer"
+        }
+      }
+    },
+    "DigitalSignature": {
+      "description": "The signature of the chart",
+      "type": "object",
+      "properties": {
+        "prov_file": {
+          "description": "The URL of the provance file",
+          "type": "string"
+        },
+        "signed": {
+          "description": "A flag to indicate if the chart is signed",
+          "type": "boolean"
+        }
+      }
+    },
+    "EmailServerSetting": {
+      "type": "object",
+      "properties": {
+        "email_host": {
+          "description": "The host of email server.",
+          "type": "string"
+        },
+        "email_identity": {
+          "description": "The dentity of email server.",
+          "type": "string"
+        },
+        "email_password": {
+          "description": "The password of email server.",
+          "type": "string"
+        },
+        "email_port": {
+          "description": "The port of email server.",
+          "type": "integer"
+        },
+        "email_ssl": {
+          "description": "Use ssl/tls or not.",
+          "type": "boolean"
+        },
+        "email_username": {
+          "description": "The username of email server.",
+          "type": "string"
+        }
+      }
+    },
+    "ForbiddenChartAPIError": {
+      "description": "Operation is forbidden",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/ChartAPIError"
+        }
+      ]
+    },
+    "GCResult": {
+      "type": "object",
+      "properties": {
+        "endtime": {
+          "description": "the end time of gc job.",
+          "type": "string"
+        },
+        "msg": {
+          "description": "the details of gc job.",
+          "type": "string"
+        },
+        "starttime": {
+          "description": "the start time of gc job.",
+          "type": "string"
+        },
+        "status": {
+          "description": "the result of gc job.",
+          "type": "boolean"
+        }
+      }
+    },
+    "GCSchedule": {
+      "type": "object",
+      "properties": {
+        "offtime": {
+          "description": "The time offset with the UTC 00:00 in seconds.",
+          "type": "integer",
+          "format": "int64"
+        },
+        "type": {
+          "description": "The schedule type. The valid values are daily， weekly and None. 'None' means to cancel the schedule.",
+          "type": "string"
+        },
+        "weekday": {
+          "description": "Optional, only used when the type is weekly. The valid values are 1-7.",
+          "type": "integer",
+          "format": "int8"
+        }
+      }
+    },
+    "GeneralInfo": {
+      "type": "object",
+      "properties": {
+        "admiral_endpoint": {
+          "description": "The url of the endpoint of admiral instance.",
+          "type": "string"
+        },
+        "auth_mode": {
+          "description": "The auth mode of current Harbor instance.",
+          "type": "string"
+        },
+        "clair_vulnerability_status": {
+          "description": "The status of vulnerability data of Clair.",
+          "type": "object",
+          "properties": {
+            "details": {
+              "description": "Detail timestamp of different namespace.  This is introduced to handle the case when some updaters are executed successfully and some not.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/VulnNamespaceTimestamp"
+              }
+            },
+            "overall_last_update": {
+              "description": "The UTC timestamp in milliseconds of last successful update for Clair vulnerability data, when all the updaters are successfully executed.",
+              "type": "integer"
+            }
+          }
+        },
+        "harbor_version": {
+          "description": "The build version of Harbor.",
+          "type": "string"
+        },
+        "has_ca_root": {
+          "description": "Indicate whether there is a ca root cert file ready for download in the file system.",
+          "type": "boolean"
+        },
+        "next_scan_all": {
+          "description": "The UTC time in milliseconds, after which user can call scanAll API to scan all images.",
+          "type": "integer"
+        },
+        "project_creation_restriction": {
+          "description": "Indicate who can create projects, it could be 'adminonly' or 'everyone'.",
+          "type": "string"
+        },
+        "self_registration": {
+          "description": "Indicate whether the Harbor instance enable user to register himself.",
+          "type": "boolean"
+        },
+        "with_admiral": {
+          "description": "If the Harbor instance is deployed with Admiral.",
+          "type": "boolean"
+        },
+        "with_clair": {
+          "description": "If the Harbor instance is deployed with nested clair.",
+          "type": "boolean"
+        },
+        "with_notary": {
+          "description": "If the Harbor instance is deployed with nested notary.",
+          "type": "boolean"
+        }
+      }
+    },
+    "HasAdminRole": {
+      "type": "object",
+      "properties": {
+        "has_admin_role": {
+          "description": "1-has admin, 0-not.",
+          "type": "integer"
+        }
+      }
+    },
+    "InsufficientStorageChartAPIError": {
+      "description": "Insufficient storage",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/ChartAPIError"
+        }
+      ]
+    },
+    "IntegerConfigItem": {
+      "type": "object",
+      "properties": {
+        "editable": {
+          "description": "The configure item can be updated or not",
+          "type": "boolean"
+        },
+        "value": {
+          "description": "The integer value of current config item",
+          "type": "integer"
+        }
+      }
+    },
+    "InternalChartAPIError": {
+      "description": "Internal server error occurred",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/ChartAPIError"
+        }
+      ]
+    },
+    "JobStatus": {
+      "type": "object",
+      "properties": {
+        "creation_time": {
+          "description": "The creation time of the job.",
+          "type": "string"
+        },
+        "id": {
+          "description": "The job ID.",
+          "type": "integer",
+          "format": "int64"
+        },
+        "operation": {
+          "description": "The operation of the job.",
+          "type": "string"
+        },
+        "policy_id": {
+          "description": "The ID of the policy that triggered this job.",
+          "type": "integer",
+          "format": "int64"
+        },
+        "repository": {
+          "description": "The repository handled by the job.",
+          "type": "string"
+        },
+        "status": {
+          "description": "The status of the job.",
+          "type": "string"
+        },
+        "tags": {
+          "description": "The repository's used tag list.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Tags"
+          }
+        },
+        "update_time": {
+          "description": "The update time of the job.",
+          "type": "string"
+        }
+      }
+    },
+    "Label": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "description": "The color of label.",
+          "type": "string"
+        },
+        "creation_time": {
+          "description": "The creation time of label.",
+          "type": "string"
+        },
+        "deleted": {
+          "description": "The label is deleted or not.",
+          "type": "boolean"
+        },
+        "description": {
+          "description": "The description of label.",
+          "type": "string"
+        },
+        "id": {
+          "description": "The ID of label.",
+          "type": "integer"
+        },
+        "name": {
+          "description": "The name of label.",
+          "type": "string"
+        },
+        "project_id": {
+          "description": "The project ID if the label is a project label.",
+          "type": "integer"
+        },
+        "scope": {
+          "description": "The scope of label, g for global labels and p for project labels.",
+          "type": "string"
+        },
+        "update_time": {
+          "description": "The update time of label.",
+          "type": "string"
+        }
+      }
+    },
+    "LdapConf": {
+      "type": "object",
+      "properties": {
+        "ldap_base_dn": {
+          "description": "The base dn of ldap service.",
+          "type": "string"
+        },
+        "ldap_connection_timeout": {
+          "description": "The connect timeout of ldap service(second).",
+          "type": "integer",
+          "format": "int64"
+        },
+        "ldap_filter": {
+          "description": "The serach filter of ldap service.",
+          "type": "string"
+        },
+        "ldap_scope": {
+          "description": "The serach scope of ldap service.",
+          "type": "integer",
+          "format": "int64"
+        },
+        "ldap_search_dn": {
+          "description": "The search dn of ldap service.",
+          "type": "string"
+        },
+        "ldap_search_password": {
+          "description": "The search password of ldap service.",
+          "type": "string"
+        },
+        "ldap_uid": {
+          "description": "The serach uid from ldap service attributes.",
+          "type": "string"
+        },
+        "ldap_url": {
+          "description": "The url of ldap service.",
+          "type": "string"
+        }
+      }
+    },
+    "LdapFailedImportUsers": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "description": "fail reason.",
+          "type": "string"
+        },
+        "ldap_uid": {
+          "description": "the uid can't add to system.",
+          "type": "string"
+        }
+      }
+    },
+    "LdapImportUsers": {
+      "type": "object",
+      "properties": {
+        "ldap_uid_list": {
+          "description": "selected uid list",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "LdapUsers": {
+      "type": "object",
+      "properties": {
+        "ldap_email": {
+          "description": "system will try to guess the user email address form \"mail\" or \"email\" attribute.",
+          "type": "string"
+        },
+        "ldap_realname": {
+          "description": "system will try to guess the user realname form \"uid\" or \"cn\" attribute.",
+          "type": "string"
+        },
+        "ldap_username": {
+          "description": "search ldap user name based on ldapconf.",
+          "type": "string"
+        }
+      }
+    },
+    "Manifest": {
+      "type": "object",
+      "properties": {
+        "config": {
+          "description": "The config of the repository.",
+          "type": "string"
+        },
+        "manifest": {
+          "description": "The detail of manifest.",
+          "type": "object"
+        }
+      }
+    },
+    "NotFoundChartAPIError": {
+      "description": "Not found",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/ChartAPIError"
+        }
+      ]
+    },
+    "Password": {
+      "type": "object",
+      "properties": {
+        "new_password": {
+          "description": "New password for marking as to be updated.",
+          "type": "string"
+        },
+        "old_password": {
+          "description": "The user's existing password.",
+          "type": "string"
+        }
+      }
+    },
+    "PingTarget": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "description": "The target address URL string.",
+          "type": "string"
+        },
+        "id": {
+          "description": "Target ID.",
+          "type": "integer",
+          "format": "int"
+        },
+        "insecure": {
+          "description": "Whether or not the certificate will be verified when Harbor tries to access the server.",
+          "type": "boolean"
+        },
+        "password": {
+          "description": "The target server password.",
+          "type": "string"
+        },
+        "username": {
+          "description": "The target server username.",
+          "type": "string"
+        }
+      }
+    },
+    "Project": {
+      "type": "object",
+      "properties": {
+        "chart_count": {
+          "description": "The total number of charts under this project.",
+          "type": "integer"
+        },
+        "creation_time": {
+          "description": "The creation time of the project.",
+          "type": "string"
+        },
+        "current_user_role_id": {
+          "description": "The role ID of the current user who triggered the API (for UI)",
+          "type": "integer"
+        },
+        "deleted": {
+          "description": "A deletion mark of the project.",
+          "type": "boolean"
+        },
+        "metadata": {
+          "description": "The metadata of the project.",
+          "$ref": "#/definitions/ProjectMetadata"
+        },
+        "name": {
+          "description": "The name of the project.",
+          "type": "string"
+        },
+        "owner_id": {
+          "description": "The owner ID of the project always means the creator of the project.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "owner_name": {
+          "description": "The owner name of the project.",
+          "type": "string"
+        },
+        "project_id": {
+          "description": "Project ID",
+          "type": "integer",
+          "format": "int32"
+        },
+        "repo_count": {
+          "description": "The number of the repositories under this project.",
+          "type": "integer"
+        },
+        "togglable": {
+          "description": "Correspond to the UI about whether the project's publicity is  updatable (for UI)",
+          "type": "boolean"
+        },
+        "update_time": {
+          "description": "The update time of the project.",
+          "type": "string"
+        }
+      }
+    },
+    "ProjectMember": {
+      "type": "object",
+      "properties": {
+        "member_group": {
+          "$ref": "#/definitions/UserGroup"
+        },
+        "member_user": {
+          "$ref": "#/definitions/UserEntity"
+        },
+        "role_id": {
+          "description": "The role id 1 for projectAdmin, 2 for developer, 3 for guest",
+          "type": "integer"
+        }
+      }
+    },
+    "ProjectMemberEntity": {
+      "type": "object",
+      "properties": {
+        "entity_id": {
+          "description": "the id of entity, if the member is an user, it is user_id in user table. if the member is an user group, it is the user group's ID in user_group table.",
+          "type": "integer"
+        },
+        "entity_name": {
+          "description": "the name of the group member.",
+          "type": "string"
+        },
+        "entity_type": {
+          "description": "the entity's type, u for user entity, g for group entity.",
+          "type": "string"
+        },
+        "id": {
+          "description": "the project member id",
+          "type": "integer"
+        },
+        "project_id": {
+          "description": "the project id",
+          "type": "integer"
+        },
+        "role_id": {
+          "description": "the role id",
+          "type": "integer"
+        },
+        "role_name": {
+          "description": "the name of the role",
+          "type": "string"
+        }
+      }
+    },
+    "ProjectMetadata": {
+      "type": "object",
+      "properties": {
+        "automatically_scan_images_on_push": {
+          "description": "Whether scan images automatically when pushing. The valid values are \"true\", \"false\".",
+          "type": "string"
+        },
+        "enable_content_trust": {
+          "description": "Whether content trust is enabled or not. If it is enabled, user cann't pull unsigned images from this project. The valid values are \"true\", \"false\".",
+          "type": "string"
+        },
+        "prevent_vulnerable_images_from_running": {
+          "description": "Whether prevent the vulnerable images from running. The valid values are \"true\", \"false\".",
+          "type": "string"
+        },
+        "prevent_vulnerable_images_from_running_severity": {
+          "description": "If the vulnerability is high than severity defined here, the images cann't be pulled. The valid values are \"negligible\", \"low\", \"medium\", \"high\", \"critical\".",
+          "type": "string"
+        },
+        "public": {
+          "description": "The public status of the project. The valid values are \"true\", \"false\".",
+          "type": "string"
+        }
+      }
+    },
+    "ProjectReq": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "description": "The metadata of the project.",
+          "$ref": "#/definitions/ProjectMetadata"
+        },
+        "project_name": {
+          "description": "The name of the project.",
+          "type": "string"
+        }
+      }
+    },
+    "PutTarget": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "description": "The target address URL string.",
+          "type": "string"
+        },
+        "insecure": {
+          "description": "Whether or not the certificate will be verified when Harbor tries to access the server.",
+          "type": "boolean"
+        },
+        "name": {
+          "description": "The target name.",
+          "type": "string"
+        },
+        "password": {
+          "description": "The target server password.",
+          "type": "string"
+        },
+        "username": {
+          "description": "The target server username.",
+          "type": "string"
+        }
+      }
+    },
+    "RepFilter": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "description": "The replication policy filter kind. The valid values are project, repository and tag.",
+          "type": "string"
+        },
+        "metadata": {
+          "description": "This map object is the replication policy filter metadata.",
+          "type": "object"
+        },
+        "pattern": {
+          "description": "Depraceted, use value instead. The replication policy filter pattern.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The value of replication policy filter. When creating repository and tag filter, filling it with the pattern as string. When creating label filter, filling it with label ID as integer.",
+          "type": "string"
+        }
+      }
+    },
+    "RepPolicy": {
+      "type": "object",
+      "properties": {
+        "creation_time": {
+          "description": "The create time of the policy.",
+          "type": "string"
+        },
+        "description": {
+          "description": "The description of the policy.",
+          "type": "string"
+        },
+        "error_job_count": {
+          "description": "The error job count number for the policy.",
+          "type": "integer"
+        },
+        "filters": {
+          "description": "The replication policy filter array.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RepFilter"
+          }
+        },
+        "id": {
+          "description": "The policy ID.",
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "description": "The policy name.",
+          "type": "string"
+        },
+        "projects": {
+          "description": "The project list that the policy applys to.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Project"
+          }
+        },
+        "replicate_deletion": {
+          "description": "Whether to replicate the deletion operation.",
+          "type": "boolean"
+        },
+        "replicate_existing_image_now": {
+          "description": "Whether to replicate the existing images now.",
+          "type": "boolean"
+        },
+        "targets": {
+          "description": "The target list.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RepTarget"
+          }
+        },
+        "trigger": {
+          "$ref": "#/definitions/RepTrigger"
+        },
+        "update_time": {
+          "description": "The update time of the policy.",
+          "type": "string"
+        }
+      }
+    },
+    "RepTarget": {
+      "type": "object",
+      "properties": {
+        "creation_time": {
+          "description": "The create time of the policy.",
+          "type": "string"
+        },
+        "endpoint": {
+          "description": "The target address URL string.",
+          "type": "string"
+        },
+        "id": {
+          "description": "The target ID.",
+          "type": "integer",
+          "format": "int64"
+        },
+        "insecure": {
+          "description": "Whether or not the certificate will be verified when Harbor tries to access the server.",
+          "type": "boolean"
+        },
+        "name": {
+          "description": "The target name.",
+          "type": "string"
+        },
+        "password": {
+          "description": "The target server password.",
+          "type": "string"
+        },
+        "type": {
+          "description": "Reserved field.",
+          "type": "integer",
+          "format": "int"
+        },
+        "update_time": {
+          "description": "The update time of the policy.",
+          "type": "string"
+        },
+        "username": {
+          "description": "The target server username.",
+          "type": "string"
+        }
+      }
+    },
+    "RepTargetPost": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "description": "The target address URL string.",
+          "type": "string"
+        },
+        "insecure": {
+          "description": "Whether or not the certificate will be verified when Harbor tries to access the server.",
+          "type": "boolean"
+        },
+        "name": {
+          "description": "The target name.",
+          "type": "string"
+        },
+        "password": {
+          "description": "The target server password.",
+          "type": "string"
+        },
+        "username": {
+          "description": "The target server username.",
+          "type": "string"
+        }
+      }
+    },
+    "RepTrigger": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "description": "The replication policy trigger kind. The valid values are manual, immediate and schedule.",
+          "type": "string"
+        },
+        "schedule_param": {
+          "$ref": "#/definitions/ScheduleParam"
+        }
+      }
+    },
+    "Replication": {
+      "type": "object",
+      "properties": {
+        "policy_id": {
+          "description": "The ID of replication policy",
+          "type": "integer"
+        }
+      }
+    },
+    "RepoSignature": {
+      "type": "object",
+      "properties": {
+        "hashes": {
+          "description": "The JSON object of the hash of the image.",
+          "type": "object"
+        },
+        "tag": {
+          "description": "The tag of image.",
+          "type": "string"
+        }
+      }
+    },
+    "Repository": {
+      "type": "object",
+      "properties": {
+        "creation_time": {
+          "description": "The creation time of repository.",
+          "type": "string"
+        },
+        "description": {
+          "description": "The description of repository.",
+          "type": "string"
+        },
+        "id": {
+          "description": "The ID of repository.",
+          "type": "integer"
+        },
+        "labels": {
+          "description": "The label list.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Label"
+          }
+        },
+        "name": {
+          "description": "The name of repository.",
+          "type": "string"
+        },
+        "project_id": {
+          "description": "The project ID of repository.",
+          "type": "integer"
+        },
+        "pull_count": {
+          "description": "The pull count of repository.",
+          "type": "integer"
+        },
+        "star_count": {
+          "description": "The star count of repository.",
+          "type": "integer"
+        },
+        "tags_count": {
+          "description": "The tags count of repository.",
+          "type": "integer"
+        },
+        "update_time": {
+          "description": "The update time of repository.",
+          "type": "string"
+        }
+      }
+    },
+    "RepositoryDescription": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "description": "The description of the repository.",
+          "type": "string"
+        }
+      }
+    },
+    "Resource": {
+      "type": "object",
+      "properties": {
+        "replication_policies": {
+          "description": "The replication policy list.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RepPolicy"
+          }
+        }
+      }
+    },
+    "Role": {
+      "type": "object",
+      "properties": {
+        "role_code": {
+          "description": "Description of permissions for the role.",
+          "type": "string"
+        },
+        "role_id": {
+          "description": "ID in table.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "role_mask": {
+          "type": "string"
+        },
+        "role_name": {
+          "description": "Name the the role.",
+          "type": "string"
+        }
+      }
+    },
+    "RoleParam": {
+      "type": "object",
+      "properties": {
+        "roles": {
+          "description": "Role ID for updating project role member.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "username": {
+          "description": "Username relevant to a project role member.",
+          "type": "string"
+        }
+      }
+    },
+    "RoleRequest": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "description": "The role id 1 for projectAdmin, 2 for developer, 3 for guest",
+          "type": "integer"
+        }
+      }
+    },
+    "ScheduleParam": {
+      "type": "object",
+      "properties": {
+        "offtime": {
+          "description": "The time offset with the UTC 00:00 in seconds.",
+          "type": "integer",
+          "format": "int64"
+        },
+        "type": {
+          "description": "The schedule type. The valid values are daily and weekly.",
+          "type": "string"
+        },
+        "weekday": {
+          "description": "Optional, only used when the type is weedly. The valid values are 1-7.",
+          "type": "integer",
+          "format": "int8"
+        }
+      }
+    },
+    "Search": {
+      "type": "object",
+      "properties": {
+        "chart": {
+          "description": "Search results of the charts that macthed the filter keywords.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SearchResult"
+          }
+        },
+        "project": {
+          "description": "Search results of the projects that matched the filter keywords.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Project"
+          }
+        },
+        "repository": {
+          "description": "Search results of the repositories that matched the filter keywords.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SearchRepository"
+          }
+        }
+      }
+    },
+    "SearchRepository": {
+      "type": "object",
+      "properties": {
+        "project_id": {
+          "description": "The ID of the project that the repository belongs to",
+          "type": "integer"
+        },
+        "project_name": {
+          "description": "The name of the project that the repository belongs to",
+          "type": "string"
+        },
+        "project_public": {
+          "description": "The flag to indicate the publicity of the project that the repository belongs to (1 is public, 0 is not)",
+          "type": "boolean"
+        },
+        "pull_count": {
+          "description": "The count how many times the repository is pulled",
+          "type": "integer"
+        },
+        "repository_name": {
+          "description": "The name of the repository",
+          "type": "string"
+        },
+        "tags_count": {
+          "description": "The count of tags in the repository",
+          "type": "integer"
+        }
+      }
+    },
+    "SearchResult": {
+      "description": "The chart search result item",
+      "type": "object",
+      "properties": {
+        "chart": {
+          "$ref": "#/definitions/ChartVersion"
+        },
+        "name": {
+          "description": "The chart name with repo name",
+          "type": "string"
+        },
+        "score": {
+          "description": "The matched level",
+          "type": "integer"
+        }
+      }
+    },
+    "SecurityReport": {
+      "description": "The security information of the chart",
+      "type": "object",
+      "properties": {
+        "signature": {
+          "$ref": "#/definitions/DigitalSignature"
+        }
+      }
+    },
+    "StatisticMap": {
+      "type": "object",
+      "properties": {
+        "private_project_count": {
+          "description": "The count of the private projects which the user is a member of.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "private_repo_count": {
+          "description": "The count of the private repositories belonging to the projects which the user is a member of.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "public_project_count": {
+          "description": "The count of the public projects.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "public_repo_count": {
+          "description": "The count of the public repositories belonging to the public projects which the user is a member of.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "total_project_count": {
+          "description": "The count of the total projects, only be seen when the is admin.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "total_repo_count": {
+          "description": "The count of the total repositories, only be seen when the user is admin.",
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Storage": {
+      "type": "object",
+      "properties": {
+        "free": {
+          "description": "Free volume size.",
+          "type": "integer",
+          "format": "int64"
+        },
+        "total": {
+          "description": "Total volume size.",
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "StringConfigItem": {
+      "type": "object",
+      "properties": {
+        "editable": {
+          "description": "The configure item can be updated or not",
+          "type": "boolean"
+        },
+        "value": {
+          "description": "The string value of current config item",
+          "type": "string"
+        }
+      }
+    },
+    "SystemInfo": {
+      "type": "object",
+      "properties": {
+        "storage": {
+          "description": "The storage of system.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Storage"
+          }
+        }
+      }
+    },
+    "Tags": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "description": "The repository's used tag.",
+          "type": "string"
+        }
+      }
+    },
+    "UnauthorizedChartAPIError": {
+      "description": "Unauthorized",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/ChartAPIError"
+        }
+      ]
+    },
+    "UpdateJobs": {
+      "type": "object",
+      "properties": {
+        "policy_id": {
+          "description": "The ID of replication policy",
+          "type": "integer"
+        },
+        "status": {
+          "description": "The status of jobs. The only valid value is stop for now.",
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "Salt": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "creation_time": {
+          "type": "string"
+        },
+        "deleted": {
+          "type": "boolean"
+        },
+        "email": {
+          "type": "string"
+        },
+        "has_admin_role": {
+          "type": "integer",
+          "format": "int"
+        },
+        "password": {
+          "type": "string"
+        },
+        "realname": {
+          "type": "string"
+        },
+        "reset_uuid": {
+          "type": "string"
+        },
+        "role_id": {
+          "type": "integer",
+          "format": "int"
+        },
+        "role_name": {
+          "type": "string"
+        },
+        "update_time": {
+          "type": "string"
+        },
+        "user_id": {
+          "description": "The ID of the user.",
+          "type": "integer",
+          "format": "int"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "UserEntity": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "description": "The ID of the user.",
+          "type": "integer"
+        },
+        "username": {
+          "description": "The name of the user.",
+          "type": "string"
+        }
+      }
+    },
+    "UserGroup": {
+      "type": "object",
+      "properties": {
+        "group_name": {
+          "description": "The name of the user group",
+          "type": "string"
+        },
+        "group_type": {
+          "description": "The group type, 1 for LDAP group.",
+          "type": "integer"
+        },
+        "id": {
+          "description": "The ID of the user group",
+          "type": "integer"
+        },
+        "ldap_group_dn": {
+          "description": "The DN of the LDAP group if group type is 1 (LDAP group).",
+          "type": "string"
+        }
+      }
+    },
+    "UserProfile": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "description": "The new comment.",
+          "type": "string"
+        },
+        "email": {
+          "description": "The new email.",
+          "type": "string"
+        },
+        "realname": {
+          "description": "The new realname.",
+          "type": "string"
+        }
+      }
+    },
+    "VulnNamespaceTimestamp": {
+      "type": "object",
+      "properties": {
+        "last_update": {
+          "description": "The UTC timestamp in miliseconds of last successful update for vulnerability data.",
+          "type": "integer"
+        },
+        "namespace": {
+          "description": "The namespace of the Vulnerability",
+          "type": "string"
+        }
+      }
+    },
+    "VulnerabilityItem": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "description": "The description of the vulnerability.",
+          "type": "string"
+        },
+        "fixedVersion": {
+          "description": "The version which the vulnerability is fixed, this is an optional property.",
+          "type": "string"
+        },
+        "id": {
+          "description": "ID of the vulnerability, normally it is the CVE ID",
+          "type": "string"
+        },
+        "package": {
+          "description": "The packge that introduces the vulnerability.",
+          "type": "string"
+        },
+        "severity": {
+          "description": "1-Negligible, 2-Unknown, 3-Low, 4-Medium, 5-High",
+          "type": "integer"
+        },
+        "version": {
+          "description": "The version of the package.",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "responses": {
+    "UnsupportedMediaType": {
+      "description": "The Media Type of the request is not supported, it has to be \"application/json\""
+    }
+  },
+  "securityDefinitions": {
+    "basicAuth": {
+      "type": "basic"
+    }
+  },
+  "security": [
+    {
+      "basicAuth": []
+    }
+  ]
+}
